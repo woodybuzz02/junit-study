@@ -86,6 +86,7 @@ public class BookRepositoryTest {
     // 3. 책 한건보기
 
     @Sql("classpath:db/tableInit.sql")
+    // 굳이 ID로 검증할 거면 날려야된다. 실제 서버로 테스트하면 ID 검증을 하지마라. 다른 방식으로 해라.
     @Test
     public void 책한건보기_test(){
 
