@@ -3,8 +3,9 @@ package com.example.junitproject.service;
 import com.example.junitproject.domain.Book;
 import com.example.junitproject.domain.BookRepository;
 import com.example.junitproject.util.MailSender;
-import com.example.junitproject.web.dto.BookRespDto;
-import com.example.junitproject.web.dto.BookSaveReqDto;
+import com.example.junitproject.web.dto.response.BookListRespDto;
+import com.example.junitproject.web.dto.response.BookRespDto;
+import com.example.junitproject.web.dto.request.BookSaveReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -30,24 +30,26 @@ public class BookService {
                 throw new RuntimeException("메일이 전송되지 않았습니다");
             }
         }
-        return new BookRespDto().toDto(bookPs);
+        return bookPs.toDto();
     }
     
     // 2. 책목록보기
-    public List<BookRespDto> 책목록보기(){
+    public BookListRespDto 책목록보기(){
         List<Book> bookPsList = bookRepository.findAll(); //영속화된 북을 리턴함
         List<BookRespDto> bookRespDtoList = new ArrayList<>();
         for(Book b : bookPsList){
-            bookRespDtoList.add(new BookRespDto().toDto(b));
+            bookRespDtoList.add(b.toDto());
         }
-        return bookRespDtoList;
+
+        BookListRespDto bookListRespDto = BookListRespDto.builder().items(bookRespDtoList).build();
+        return bookListRespDto;
     }
 
     // 3. 책한건보기
     public BookRespDto 책한건보기(Long id){
         Optional<Book> bookOP = bookRepository.findById(id);
         if(bookOP.isPresent()){
-            return new BookRespDto().toDto(bookOP.get());
+            return bookOP.get().toDto();
         }else{
             throw new RuntimeException("해당 아이디를 찾을 수 없습니다.");
         }
@@ -66,7 +68,7 @@ public class BookService {
         if(bookOP.isPresent()){
             Book bookPs = bookOP.get();
             bookPs.update(dto.getTitle(), dto.getAuthor());
-            return new BookRespDto().toDto(bookPs);
+            return bookPs.toDto();
         }else{
             throw new RuntimeException("해당 아이디를 찾을 수 없습니다.");
         }

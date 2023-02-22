@@ -5,19 +5,16 @@ import static org.assertj.core.api.Assertions.*;
 import com.example.junitproject.domain.Book;
 import com.example.junitproject.domain.BookRepository;
 import com.example.junitproject.util.MailSender;
-import com.example.junitproject.util.MailSenderStub;
-import com.example.junitproject.web.dto.BookRespDto;
-import com.example.junitproject.web.dto.BookSaveReqDto;
+import com.example.junitproject.web.dto.response.BookListRespDto;
+import com.example.junitproject.web.dto.response.BookRespDto;
+import com.example.junitproject.web.dto.request.BookSaveReqDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,13 +67,13 @@ public class BookServiceTest {
         when(bookRepository.findAll()).thenReturn(books);
 
         // when
-        List<BookRespDto> dtos = bookService.책목록보기();
+        BookListRespDto bookListRespDto = bookService.책목록보기();
 
         // then
-        assertThat(dtos.get(0).getTitle()).isEqualTo("junit강의");
-        assertThat(dtos.get(0).getAuthor()).isEqualTo("메타");
-        assertThat(dtos.get(1).getTitle()).isEqualTo("스프링강의");
-        assertThat(dtos.get(1).getAuthor()).isEqualTo("겟인데어");
+        assertThat(bookListRespDto.getItems().get(0).getTitle()).isEqualTo("junit강의");
+        assertThat(bookListRespDto.getItems().get(0).getAuthor()).isEqualTo("메타");
+        assertThat(bookListRespDto.getItems().get(1).getTitle()).isEqualTo("스프링강의");
+        assertThat(bookListRespDto.getItems().get(1).getAuthor()).isEqualTo("겟인데어");
     }
 
     @Test
